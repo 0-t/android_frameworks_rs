@@ -1,13 +1,13 @@
 
 LOCAL_PATH:=$(call my-dir)
 
-rs_base_CFLAGS := -Werror -Wall -Wno-unused-parameter -Wno-unused-variable
+rs_base_CFLAGS := -Wno-error -Wall -Wno-unused-parameter -Wno-unused-variable -fno-strict-aliasing $(call-cc-cpp-option,-Qunused-arguments)
 ifeq ($(TARGET_BUILD_PDK), true)
-  rs_base_CFLAGS += -D__RS_PDK__
+  rs_base_CFLAGS += -D__RS_PDK__ -fno-strict-aliasing $(call-cc-cpp-option,-Qunused-arguments)
 endif
 
 ifneq ($(OVERRIDE_RS_DRIVER),)
-  rs_base_CFLAGS += -DOVERRIDE_RS_DRIVER=$(OVERRIDE_RS_DRIVER)
+  rs_base_CFLAGS += -DOVERRIDE_RS_DRIVER=$(OVERRIDE_RS_DRIVER) -fno-strict-aliasing
 endif
 
 include $(CLEAR_VARS)
@@ -42,7 +42,7 @@ LOCAL_SHARED_LIBRARIES += libbcc libbcinfo libLLVM libui libgui libsync
 LOCAL_C_INCLUDES += frameworks/compile/libbcc/include
 LOCAL_C_INCLUDES += frameworks/rs/cpu_ref/linkloader/include
 
-LOCAL_CFLAGS += $(rs_base_CFLAGS)
+LOCAL_CFLAGS += $(rs_base_CFLAGS) -fno-strict-aliasing
 
 LOCAL_LDLIBS := -lpthread -ldl
 LOCAL_MODULE_TAGS := optional
@@ -157,7 +157,7 @@ LOCAL_SHARED_LIBRARIES += libft2 libpng libz
 LOCAL_C_INCLUDES += external/freetype/include
 LOCAL_C_INCLUDES += frameworks/compile/libbcc/include
 
-LOCAL_CFLAGS += $(rs_base_CFLAGS)
+LOCAL_CFLAGS += $(rs_base_CFLAGS) -fno-strict-aliasing
 
 LOCAL_LDLIBS := -lpthread -ldl
 LOCAL_MODULE_TAGS := optional
@@ -204,7 +204,7 @@ LOCAL_GENERATED_SOURCES += $(GEN)
 LOCAL_CFLAGS += $(rs_base_CFLAGS)
 LOCAL_CFLAGS += -DANDROID_RS_SERIALIZE
 LOCAL_CFLAGS += -fPIC
-
+LOCAL_CFLAGS += -fno-strict-aliasing
 LOCAL_SRC_FILES:= \
 	rsAdapter.cpp \
 	rsAllocation.cpp \
@@ -277,7 +277,7 @@ LOCAL_SRC_FILES := $(rsloader_SRC_FILES)
 
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 
-LOCAL_CFLAGS += $(rs_base_CFLAGS)
+LOCAL_CFLAGS += $(rs_base_CFLAGS) -fno-strict-aliasing
 
 LOCAL_C_INCLUDES := \
   $(LOCAL_PATH)/cpu_ref/linkloader \
@@ -308,6 +308,7 @@ LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 
 LOCAL_CFLAGS += $(rs_base_CFLAGS)
 LOCAL_CFLAGS += -D__HOST__
+LOCAL_CFLAGS += -fno-strict-aliasing
 
 LOCAL_C_INCLUDES := \
   $(LOCAL_PATH)/cpu_ref/linkloader \
